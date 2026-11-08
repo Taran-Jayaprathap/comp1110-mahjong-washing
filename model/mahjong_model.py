@@ -178,7 +178,7 @@ def bootstrap_ci(trials_tables, stat, rng, reps=10000):
 # ---------------------------------------------------------------------------
 
 def perfect_shuffle_tables(n_games, rng):
-    """4x4 tables of n_games perfectly shuffled games (random.shuffle of 144 tiles, 4 walls of 36)."""
+    """4x4 tables of n_games perfectly shuffled games (uniform random permutation of 144 tiles via numpy argsort, 4 walls of 36)."""
     order = rng.random((n_games, N_TILES)).argsort(axis=1)      # a random permutation per game
     suit_at_position = (order // WALL).reshape(n_games, 4, WALL) # [game, wall, slot] -> start suit
     tables = (suit_at_position[..., None] == np.arange(4)).sum(axis=2)   # [game, wall, suit]
