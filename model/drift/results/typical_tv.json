@@ -1,0 +1,18 @@
+{
+ "rate": 32,
+ "swirl": -0.09,
+ "seconds": 20.0,
+ "n_trials": 10,
+ "simulated_tables": 1600,
+ "experiments": 10000,
+ "seed": 1110,
+ "median_T": 0.10833333333333334,
+ "mean_T": 0.1094672222222222,
+ "quartiles_T": [
+  0.09166666666666667,
+  0.12500000000000003
+ ],
+ "real_T": 0.1111111111111111,
+ "share_at_or_above_real": 0.4719,
+ "share_above_perfect_95": 0.9539
+}

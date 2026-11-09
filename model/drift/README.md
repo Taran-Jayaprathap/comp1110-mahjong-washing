@@ -7,12 +7,14 @@ East and West sides, tiles re-sorted before every trial; 1,440 tiles counted fro
 |---|---|
 | `drift_model.py` | The washing simulation from `../mahjong_model.py` plus one parameter, `swirl`: each stroke also turns the tiles under the hand about the table centre by `swirl x U(0,1)` radians (negative = clockwise in the model's frame). |
 | `fit_drift.py` | Grid search over stroke rate and swirl. Writes `results/fit.json` and `results/fit_report.md`. |
+| `typical_tv.py` | Typical largest TV distance (T) the fitted model gives for a 10-trial experiment at 20 s. Writes `results/typical_tv.json`. |
 | `noise_check.py` | Re-scores the best points with 4 other seeds, to show how much of the fit error is simulation noise. |
 
 Reproduce (from `model/`, about 20 min on 4 cores):
 
     python3 drift/fit_drift.py data/real_trials_prelim.csv
     python3 drift/noise_check.py data/real_trials_prelim.csv
+    python3 drift/typical_tv.py data/real_trials_prelim.csv
 
 ## Fit error
 
@@ -40,5 +42,11 @@ push 0.2, reach 0.7 and the 25% washer spread are fixed guesses from `mahjong_mo
   cannot tell the seating from the data.
 - Only one washing time (20 s) was measured, and the grid is coarse (rates step by x1.41, swirl by
   0.03 rad), so treat 32 /s and -0.09 rad as rough values.
+
+## Typical T at the best fit
+
+1,600 simulated tables at 32 /s, swirl -0.09, E+W; 10,000 pretend 10-trial experiments resampled from
+them (seed 1110). Median T = 0.108 (quartiles 0.092 to 0.125); the real T is 0.111. 95% of simulated
+experiments are above the perfect-shuffle 95% cutoff of 0.067. T was not used in the fit.
 
 Full grid: `results/fit_report.md`.
