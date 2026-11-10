@@ -8,6 +8,7 @@ East and West sides, tiles re-sorted before every trial; 1,440 tiles counted fro
 | `drift_model.py` | The washing simulation from `../mahjong_model.py` plus one parameter, `swirl`: each stroke also turns the tiles under the hand about the table centre by `swirl x U(0,1)` radians (negative = clockwise in the model's frame). |
 | `fit_drift.py` | Grid search over stroke rate and swirl. Writes `results/fit.json` and `results/fit_report.md`. |
 | `typical_tv.py` | Typical largest TV distance (T) the fitted model gives for a 10-trial experiment at 20 s. Writes `results/typical_tv.json`. |
+| `time_curve.py` | Washing-time predictions at the best fit: destination shares and the chance a 10- or 40-trial test says "not random", for 0-120 s. Writes `results/time_curve.json`, `time_curve.csv`, `sim_drift_vs_time.png`. |
 | `noise_check.py` | Re-scores the best points with 4 other seeds, to show how much of the fit error is simulation noise. |
 
 Reproduce (from `model/`, about 20 min on 4 cores):
@@ -15,6 +16,7 @@ Reproduce (from `model/`, about 20 min on 4 cores):
     python3 drift/fit_drift.py data/real_trials_prelim.csv
     python3 drift/noise_check.py data/real_trials_prelim.csv
     python3 drift/typical_tv.py data/real_trials_prelim.csv
+    python3 drift/time_curve.py data/real_trials_prelim.csv     # about 4 min
 
 ## Fit error
 
@@ -50,3 +52,25 @@ them (seed 1110). Median T = 0.108 (quartiles 0.092 to 0.125); the real T is 0.1
 experiments are above the perfect-shuffle 95% cutoff of 0.067. T was not used in the fit.
 
 Full grid: `results/fit_report.md`.
+
+## Washing-time predictions at the best fit
+
+`time_curve.py`, seed 1110, 800 simulated tables per washing time, 10,000 resampled experiments per point.
+"Detected" = largest TV distance above the perfect-shuffle 95% cutoff (0.067 for 10 trials, 0.033 for 40).
+
+Where tiles end up at 20 s:
+
+| | Own wall | Next seat | Opposite | Previous seat |
+|---|---|---|---|---|
+| Real 10 trials | 25.3% | 20.3% | 23.1% | 31.3% |
+| Model | 24.4% | 19.9% | 25.2% | 30.5% |
+
+| Time (s) | 10 | 20 | 25 | 30 | 35 | 40 | 45 | 50 | 60 | 90 | 120 |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| Detected, 10 trials | 100% | 93% | 80% | 68% | 54% | 44% | 34% | 38% | 32% | 29% | 30% |
+| Detected, 40 trials | 100% | 100% | 99.7% | 98% | 85% | 70% | 48% | 54% | 38% | 39% | 43% |
+
+- Detection drops below 50% after about 37 s for a 10-trial experiment and about 45 s for 40 trials.
+- It levels off around 30% (10 trials) and 40% (40 trials), not 5%: in the model, tiles pressed against the
+  table edge never fully mix. The 50 s bump is noise around that floor.
+- Fitted at one washing time (20 s) only, so other times are extrapolations; treat them as rough.
